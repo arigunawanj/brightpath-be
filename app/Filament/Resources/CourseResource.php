@@ -19,16 +19,16 @@ class CourseResource extends Resource
     protected static ?string $model = CourseModel::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
-    protected static ?string $navigationLabel = 'Kelola Course';
+    protected static ?string $navigationLabel = 'Course';
     public static ?string $label = 'Course';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')->required(),
-                Forms\Components\Textarea::make('description'),
+                Forms\Components\RichEditor::make('description'),
                 Forms\Components\Select::make('teacher_id')
-                    ->relationship('user', 'name')
+                    ->relationship('teacher', 'name')
                     ->required(),
             ]);
     }
@@ -38,7 +38,7 @@ class CourseResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title'),
-                Tables\Columns\TextColumn::make('user.name')->label('Teacher'),
+                Tables\Columns\TextColumn::make('teacher.name')->label('Teacher'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime(),
             ])
             ->filters([
@@ -46,6 +46,7 @@ class CourseResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
